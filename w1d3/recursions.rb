@@ -128,28 +128,50 @@ end
 #try making change both while dropping it and without dropping it
 
 def make_change(target, denominations)
-  denominations_copy = denominations.dup;
-  target_copy = target;
-  min = [];
-
-  while(denominations_copy.length > 0 && target_copy > 0)
-    num = target_copy/denominations_copy[0];
-    target_copy = target_copy % denominations_copy[0];
-    min += [denominations_copy[0]]*num;
-    denominations_copy.shift;
+  if(target == 0)
+    return [];
   end
 
-  if(denominations.length > 0)
-    change = make_change(target,denominations[1..denominations.length-1]);
-  else
-    change = []
+  best_change = nil;
+
+  denominations.each do |coin|
+    if(coin > target)
+      next;
+    end
+    change_rest = make_change(target-coin, denominations);
+    change = [coin] + change_rest;
+    
+    if(best_change.nil? || change.length < best_change.length)
+      best_change = change;
+    end
   end
 
-  if(min.length > change.length && change.length >= 1)
-    min = change;
-  end
-  return min;
+  return best_change;
 end
+
+# def make_change(target, denominations)
+#   denominations_copy = denominations.dup;
+#   target_copy = target;
+#   min = [];
+
+#   while(denominations_copy.length > 0 && target_copy > 0)
+#     num = target_copy/denominations_copy[0];
+#     target_copy = target_copy % denominations_copy[0];
+#     min += [denominations_copy[0]]*num;
+#     denominations_copy.shift;
+#   end
+
+#   if(denominations.length > 0)
+#     change = make_change(target,denominations[1..denominations.length-1]);
+#   else
+#     change = []
+#   end
+
+#   if(min.length > change.length && change.length >= 1)
+#     min = change;
+#   end
+#   return min;
+# end
 
 def merge_sort(array)
   if(array.length <= 1)
@@ -213,3 +235,28 @@ def subsets(array)
   return subs;
 
 end
+
+def quicksort(array)
+  if(array.length <= 1)
+    return array;
+  end
+
+  array.shuffle!;
+  pivot = array[0];
+  left = [];
+  right = [];
+  pivot_arr = [];
+
+  array.each do |el|
+    if(pivot < el)
+      right.push(el);
+    elsif(pivot > el)
+      left.push(el);
+    else
+      pivot_arr.push(el);
+    end
+  end
+
+  return quicksort(left) + pivot_arr + quicksort(right);
+end
+
