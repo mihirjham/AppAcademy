@@ -160,3 +160,30 @@ def subsets(array)
 
 	return subs
 end
+
+class Array
+	def quicksort
+		if(length < 2)
+			return self
+		end
+
+		ary = self.shuffle
+
+		pivot = ary.first
+		pivot_arr = []
+		left = []
+		right = []
+
+		ary.each do |el|
+			if(el < pivot)
+				left << el
+			elsif(el > pivot)
+				right << el
+			else
+				pivot_arr << el
+			end
+		end
+
+		return left.quicksort + pivot_arr + right.quicksort
+	end
+end
